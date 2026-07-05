@@ -1,0 +1,36 @@
+﻿name: Deploy to Power Platform
+
+on:
+  push:
+    branches: [dev, prod]
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    environment: ${{ github.ref == 'refs/heads/prod' && 'Production' || 'Development' }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Install Power Platform CLI
+        uses: microsoft/powerplatform-actions/actions-install@v1
+
+      - name: Authenticate to Power Platform
+        uses: microsoft/powerplatform-actions/actions-auth@v1
+        with:
+          environment-url: ${{ secrets.PAC_ENV_URL }}
+          app-id: ${{ secrets.PAC_CLIENT_ID }}
+          client-secret: ${{ secrets.PAC_CLIENT_SECRET }}
+          tenant-id: ${{ secrets.PAC_TENANT_ID }}
+
+      - name: Push Code App
+        run: pac code push
