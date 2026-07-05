@@ -1,4 +1,4 @@
-﻿name: Deploy to Power Platform
+name: Deploy to Power Platform
 
 on:
   push:
@@ -22,15 +22,10 @@ jobs:
         run: npm run build
 
       - name: Install Power Platform CLI
-        uses: microsoft/powerplatform-actions/actions-install@v1
+        run: dotnet tool install --global Microsoft.PowerPlatform.CLI
 
       - name: Authenticate to Power Platform
-        uses: microsoft/powerplatform-actions/actions-auth@v1
-        with:
-          environment-url: ${{ secrets.PAC_ENV_URL }}
-          app-id: ${{ secrets.PAC_CLIENT_ID }}
-          client-secret: ${{ secrets.PAC_CLIENT_SECRET }}
-          tenant-id: ${{ secrets.PAC_TENANT_ID }}
+        run: pac auth create --tenant "${{ secrets.PAC_TENANT_ID }}" --applicationId "${{ secrets.PAC_CLIENT_ID }}" --clientSecret "${{ secrets.PAC_CLIENT_SECRET }}" --environment "${{ secrets.PAC_ENV_URL }}"
 
       - name: Push Code App
         run: pac code push
