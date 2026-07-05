@@ -22,7 +22,7 @@ jobs:
         run: npm run build
 
       - name: Install Power Platform CLI
-        run: dotnet tool install --global Microsoft.PowerPlatform.CLI
+        run: dotnet tool install --global Microsoft.PowerApps.CLI.Tool
 
       - name: Authenticate to Power Platform
         run: pac auth create --tenant "${{ secrets.PAC_TENANT_ID }}" --applicationId "${{ secrets.PAC_CLIENT_ID }}" --clientSecret "${{ secrets.PAC_CLIENT_SECRET }}" --environment "${{ secrets.PAC_ENV_URL }}"
